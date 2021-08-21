@@ -14,6 +14,7 @@ public class HttpInitializer extends ChannelInitializer<SocketChannel> {
 		p.addLast(new HttpServerCodec());
 		//p.addLast(new HttpServerExpectContinueHandler());
 		p.addLast(new HttpObjectAggregator(1024 * 1024));
+		p.addLast(new MyFilter());
 		p.addLast(new HttpHandler());
 	}
 }
