@@ -12,22 +12,15 @@ import static io.netty.handler.codec.http.HttpResponseStatus.BAD_REQUEST;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
 /**
- * 自己实现一个过滤器
+ * 实现一个过滤器
  */
 public class MyFilter extends ChannelInboundHandlerAdapter {
 
     @Override
-    public void channelReadComplete(ChannelHandlerContext ctx) {
-        ctx.flush();
-    }
-
-    @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        //logger.info("channelRead流量接口请求开始，时间为{}", startTime);
         FullHttpRequest fullRequest = (FullHttpRequest) msg;
         FullHttpResponse response = null;
         try {
-            //logger.info("接收到的请求url为{}", uri);
             if (!urlFilter(fullRequest.uri())){
                 response = new DefaultFullHttpResponse(HTTP_1_1, BAD_REQUEST,Unpooled.wrappedBuffer("bad request".getBytes("UTF-8")));
                 ctx.channel().writeAndFlush(response).addListener(ChannelFutureListener.CLOSE);
@@ -53,9 +46,4 @@ public class MyFilter extends ChannelInboundHandlerAdapter {
         return true;
     }
 
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        cause.printStackTrace();
-        ctx.close();
-    }
 }
